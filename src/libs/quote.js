@@ -1,5 +1,6 @@
 const ethers = require("ethers")
 const { computePoolAddress } = require("@uniswap/v3-sdk")
+const { Token } = require("@uniswap/sdk-core")
 const { CurrentConfig } = require("../../config")
 const Quoter = require("@uniswap/v3-periphery/artifacts/contracts/lens/Quoter.sol/Quoter.json")
 const IUniswapV3PoolABI = require("@uniswap/v3-core/artifacts/contracts/interfaces/IUniswapV3Pool.sol/IUniswapV3Pool.json")
@@ -17,10 +18,7 @@ async function quote() {
         getProvider(),
     )
 
-    const poolConstants = await getPoolConstants(
-        CurrentConfig.tokens.in,
-        CurrentConfig.tokens.out,
-    )
+    const poolConstants = await getPoolConstants()
 
     const quotedAmountOut =
         await quoterContract.callStatic.quoteExactInputSingle(
@@ -60,21 +58,20 @@ async function getPoolConstants() {
         getProvider(),
     )
 
-    try {
-        const [token0, token1, fee] = await Promise.all([
-            poolContract.token0(),
-            poolContract.token1(),
-            poolContract.fee(),
-        ])
+    const [token0, token1, fee] = await Promise.all([
+        poolContract.token0(),
+        poolContract.token1(),
+        poolContract.fee(),
+    ])
 
-        // Use token0, token1, and fee here
-    } catch (error) {
-        console.error("Error fetching pool details:", error)
+    // Use token0, token1, and fee here
 
-        return { token0, token1, fee }
-    }
+    return { token0, token1, fee }
 }
 
-quote()
+quote().catch((error) => {
+    console.error(error)
+    process.exitCode = 1
+})
 
 exports.quote = quote

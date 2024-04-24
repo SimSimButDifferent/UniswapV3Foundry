@@ -1,23 +1,26 @@
-import { ethers } from "ethers"
-import { computePoolAddress } from "@uniswap/v3-sdk"
-import { CurrentConfig } from "../config"
-import Quoter from "@uniswap/v3-periphery/artifacts/contracts/lens/Quoter.sol/Quoter.json"
-import IUniswapV3PoolABI from "@uniswap/v3-core/artifacts/contracts/interfaces/IUniswapV3Pool.sol/IUniswapV3Pool.json"
-import {
+const ethers = require("ethers")
+const { computePoolAddress } = require("@uniswap/v3-sdk")
+const { CurrentConfig } = require("../../config")
+const Quoter = require("@uniswap/v3-periphery/artifacts/contracts/lens/Quoter.sol/Quoter.json")
+const IUniswapV3PoolABI = require("@uniswap/v3-core/artifacts/contracts/interfaces/IUniswapV3Pool.sol/IUniswapV3Pool.json")
+const {
     POOL_FACTORY_CONTRACT_ADDRESS,
     QUOTER_CONTRACT_ADDRESS,
-} from "./constants"
-import { getProvider } from "./providers"
-import { toReadableAmount, fromReadableAmount } from "./conversion"
+} = require("./constants")
+const { getProvider } = require("./providers")
+const { toReadableAmount, fromReadableAmount } = require("./conversion")
 
-export async function quote() {
+async function quote() {
     const quoterContract = new ethers.Contract(
         QUOTER_CONTRACT_ADDRESS,
         Quoter.abi,
         getProvider(),
     )
 
-    const poolConstants = await getPoolConstants()
+    const poolConstants = await getPoolConstants(
+        CurrentConfig.tokens.in,
+        CurrentConfig.tokens.out,
+    )
 
     const quotedAmountOut =
         await quoterContract.callStatic.quoteExactInputSingle(
@@ -30,15 +33,25 @@ export async function quote() {
             ),
             0,
         )
-
+    console.log(
+        toReadableAmount(quotedAmountOut, CurrentConfig.tokens.out.decimals),
+    )
     return toReadableAmount(quotedAmountOut, CurrentConfig.tokens.out.decimals)
 }
 async function getPoolConstants() {
+    console.log("Token 0:", CurrentConfig.tokens.in)
+    console.log("Token 1:", CurrentConfig.tokens.out)
+
+    if (!CurrentConfig.tokens.in || !CurrentConfig.tokens.out) {
+        console.error("One of the tokens is undefined.")
+        return
+    }
     const currentPoolAddress = computePoolAddress({
         factoryAddress: POOL_FACTORY_CONTRACT_ADDRESS,
-        tokenA: CurrentConfig.tokens.in,
-        tokenB: CurrentConfig.tokens.out,
         fee: CurrentConfig.tokens.poolFee,
+        token0: CurrentConfig.tokens.in,
+        token1: CurrentConfig.tokens.out,
+        initCodeHashManualOverride: 0,
     })
 
     const poolContract = new ethers.Contract(
@@ -47,11 +60,21 @@ async function getPoolConstants() {
         getProvider(),
     )
 
-    const [token0, token1, fee] = await Promise.all([
-        poolContract.token0(),
-        poolContract.token1(),
-        poolContract.fee(),
-    ])
+    try {
+        const [token0, token1, fee] = await Promise.all([
+            poolContract.token0(),
+            poolContract.token1(),
+            poolContract.fee(),
+        ])
 
-    return { token0, token1, fee }
+        // Use token0, token1, and fee here
+    } catch (error) {
+        console.error("Error fetching pool details:", error)
+
+        return { token0, token1, fee }
+    }
 }
+
+quote()
+
+exports.quote = quote

@@ -1,5 +1,5 @@
-import { FeeAmount } from "@uniswap/v3-sdk"
-import { USDC_TOKEN, WETH_TOKEN } from "./libs/constants"
+const { FeeAmount } = require("@uniswap/v3-sdk")
+const { USDC_TOKEN, WETH_TOKEN } = require("./src/libs/constants")
 
 const CurrentConfig = {
     rpc: {

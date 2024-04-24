@@ -1,11 +1,13 @@
-import { BigNumberish, ethers } from "ethers"
+const { ethers } = require("ethers")
 
 const READABLE_FORM_LEN = 4
 
-export function fromReadableAmount(amount, decimals) {
+function fromReadableAmount(amount, decimals) {
     return ethers.parseUnits(amount.toString(), decimals)
 }
 
-export function toReadableAmount(rawAmount, decimals) {
+function toReadableAmount(rawAmount, decimals) {
     return ethers.formatUnits(rawAmount, decimals).slice(0, READABLE_FORM_LEN)
 }
+
+module.exports = { fromReadableAmount, toReadableAmount }

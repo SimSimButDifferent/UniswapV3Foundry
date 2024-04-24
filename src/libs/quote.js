@@ -6,14 +6,34 @@ import IUniswapV3PoolABI from "@uniswap/v3-core/artifacts/contracts/interfaces/I
 import {
     POOL_FACTORY_CONTRACT_ADDRESS,
     QUOTER_CONTRACT_ADDRESS,
-} from "../libs/constants"
+} from "./constants"
 import { getProvider } from "./providers"
+import { toReadableAmount, fromReadableAmount } from "./conversion"
 
-async function getPoolConstants(): Promise<{
-    token0: string
-    token1: string
-    fee: number
-}> {
+export async function quote() {
+    const quoterContract = new ethers.Contract(
+        QUOTER_CONTRACT_ADDRESS,
+        Quoter.abi,
+        getProvider(),
+    )
+
+    const poolConstants = await getPoolConstants()
+
+    const quotedAmountOut =
+        await quoterContract.callStatic.quoteExactInputSingle(
+            poolConstants.token0,
+            poolConstants.token1,
+            poolConstants.fee,
+            fromReadableAmount(
+                CurrentConfig.tokens.amountIn,
+                CurrentConfig.tokens.in.decimals,
+            ),
+            0,
+        )
+
+    return toReadableAmount(quotedAmountOut, CurrentConfig.tokens.out.decimals)
+}
+async function getPoolConstants() {
     const currentPoolAddress = computePoolAddress({
         factoryAddress: POOL_FACTORY_CONTRACT_ADDRESS,
         tokenA: CurrentConfig.tokens.in,

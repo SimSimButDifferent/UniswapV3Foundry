@@ -1,21 +1,7 @@
-import { Token } from "@uniswap/sdk-core"
 import { FeeAmount } from "@uniswap/v3-sdk"
 import { USDC_TOKEN, WETH_TOKEN } from "./libs/constants"
 
-interface TsConfig {
-    rpc: {
-        local: string
-        mainnet: string
-    }
-    tokens: {
-        in: Token
-        amountIn: number
-        out: Token
-        poolFee: number
-    }
-}
-
-export const CurrentConfig: TsConfig = {
+const CurrentConfig = {
     rpc: {
         local: "http://localhost:8545",
         mainnet:
@@ -28,3 +14,5 @@ export const CurrentConfig: TsConfig = {
         poolFee: FeeAmount.MEDIUM,
     },
 }
+
+module.exports = { CurrentConfig }

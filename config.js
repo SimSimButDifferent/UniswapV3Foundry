@@ -1,5 +1,6 @@
 const { FeeAmount } = require("@uniswap/v3-sdk")
-const { USDC_TOKEN, WETH_TOKEN } = require("./src/libs/constants")
+const { USDC_TOKEN, WETH_TOKEN } = require("./src/utils/constants")
+const { ethers } = require("hardhat")
 
 const CurrentConfig = {
     rpc: {
@@ -7,11 +8,11 @@ const CurrentConfig = {
         mainnet:
             "https://eth-mainnet.g.alchemy.com/v2/VuIQG_PWKLrGJ3At5UsTBFVSaq97E41r",
     },
-    tokens: {
-        in: USDC_TOKEN,
-        amountIn: 1000,
-        out: WETH_TOKEN,
+    quoteParams: {
+        in: WETH_TOKEN.address,
+        out: USDC_TOKEN.address,
         poolFee: FeeAmount.MEDIUM,
+        amountIn: ethers.utils.parseEther("1"),
     },
 }
 

@@ -31,8 +31,8 @@ async function quoteV1(params) {
     )
 
     // Get the params from the config file
-    const tokenIn = params.in
-    const tokenOut = params.out
+    const tokenIn = params.in.address
+    const tokenOut = params.out.address
     const fee = params.poolFee
     const amountIn = params.amountIn
     const sqrtPriceLimitX96 = 0
@@ -49,17 +49,30 @@ async function quoteV1(params) {
 
         // Log the amount of tokenOut that will be received
         console.log(
-            "Quoted Amount Out:",
+            `Quoted Amount Out for ${params.in.name} :`,
             ethers.utils.formatUnits(amountOut, 6),
         )
+
+        return ethers.utils.formatUnits(amountOut, 6)
     } catch (error) {
         console.error("Error calling quoteExactInputSingle:", error)
     }
 }
 
-quoteV1(CurrentConfig.quoteParams).catch((error) => {
+quoteV1(CurrentConfig.WETHUSDC).catch((error) => {
     console.error("Error in main function:", error)
     process.exitCode = 1
 })
+quoteV1(CurrentConfig.USDTUSDC)
+
+quoteV1(CurrentConfig.WBTCUSDT)
+
+quoteV1(CurrentConfig.LINKUSDT)
+
+quoteV1(CurrentConfig.UNIUSDT)
+
+quoteV1(CurrentConfig.AAVEUSDC)
+
+quoteV1(CurrentConfig.CRVUSDT)
 
 exports.quoteV1 = quoteV1

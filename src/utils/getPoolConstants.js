@@ -8,6 +8,12 @@ const {
     POOL_FACTORY_CONTRACT_ADDRESS,
     USDC_TOKEN,
     WETH_TOKEN,
+    USDT_TOKEN,
+    WBTC_TOKEN,
+    LINK_TOKEN,
+    UNI_TOKEN,
+    AAVE_TOKEN,
+    CRV_TOKEN,
 } = require("../utils/constants")
 
 const feeLow = FeeAmount.LOW
@@ -44,7 +50,7 @@ async function getPoolConstants(_token0, _token1, _fee) {
     return currentPoolAddress
 }
 
-getPoolConstants(USDC_TOKEN, WETH_TOKEN, feeMed).catch((error) => {
+getPoolConstants(USDC_TOKEN, AAVE_TOKEN, feeMed).catch((error) => {
     console.error("Error in getPoolConstants:", error)
     process.exitCode = 1
 })

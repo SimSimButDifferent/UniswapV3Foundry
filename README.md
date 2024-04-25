@@ -1,66 +1,46 @@
-## Foundry
+## Uniswap V3 testing boilerplate.
 
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
+Building a functional testing environment that i can use as a clone to build any projects that use the Uniswap V3 protocol. Using the SDK and smart contracts together to build things.
 
-Foundry consists of:
+**To get started...**
 
--   **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
--   **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
--   **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
--   **Chisel**: Fast, utilitarian, and verbose solidity REPL.
-
-## Documentation
-
-https://book.getfoundry.sh/
-
-## Usage
-
-### Build
-
-```shell
-$ forge build
+```bash
+git clone https://github.com/SimSimButDifferent/UniswapV3Foundry.git
 ```
 
-### Test
+### Some commands to run
 
-```shell
-$ forge test
+**Get a Quote**
+
+quoteV1(params) function takes a pair object as defined inside **config.js**.
+
+```bash
+yarn hardhat run src/utils/quoteV1.js
+
+Quoted Amount Out for Wrapped Ether : 3123.994209
+Quoted Amount Out for Wrapped Bitcoin : 63760.640759
+Quoted Amount Out for Aave Token : 86.160963
+Quoted Amount Out for Curve DAO Token : 0.44082
+Quoted Amount Out for Tether : 0.997499
+Quoted Amount Out for Uniswap : 7.716985
+Quoted Amount Out for Chainlink : 14.86376
+Done in 4.82s.
 ```
 
-### Format
+**get Pool address**
 
-```shell
-$ forge fmt
+getPoolConstants(_token0, _token1, _fee) takes two Token objects as defined in the **constants.js**.
+
+```bash
+yarn hardhat run src/utils/getPoolConstants.js
+
+Current pool address for USDC / Aave Token is: 0xdceaf5d0E5E0dB9596A47C0c4120654e80B1d706
+Done in 3.19s.
 ```
 
-### Gas Snapshots
+### Add more tokens
 
-```shell
-$ forge snapshot
-```
+- Add new token objects to **constants.js**
 
-### Anvil
+- Add pairs to **config.js** file
 
-```shell
-$ anvil
-```
-
-### Deploy
-
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
-```
-
-### Cast
-
-```shell
-$ cast <subcommand>
-```
-
-### Help
-
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
-```

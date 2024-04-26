@@ -20,3 +20,7 @@ node_modules
 artifacts/
 
 cache_hardhat/
+
+FoundryCmds.txt
+
+lib/

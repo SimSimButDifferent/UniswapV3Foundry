@@ -12,7 +12,7 @@ abstract contract SimpleSwapV3test is SimpleSwapV3 {
         simpleSwapV3 = _simpleSwapV3;
     }
 
-    function testSwapExactInputSingle(
+    function test_SwapExactInputSingle(
         uint256 amountIn
     ) external returns (uint256 amountOut) {
         return simpleSwapV3.swapExactInputSingle(amountIn);

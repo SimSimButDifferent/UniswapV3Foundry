@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
-pragma solidity =0.7.6;
+pragma solidity >=0.7.0 <0.9.0;
 pragma abicoder v2;
 
-import "node_modules/@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol";
-import "node_modules/@uniswap/v3-periphery/contracts/libraries/TransferHelper.sol";
+import "@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol";
+import "@uniswap/v3-periphery/contracts/libraries/TransferHelper.sol";
 
 contract SimpleSwapV3 {
     ISwapRouter public immutable swapRouter;
@@ -26,7 +26,7 @@ contract SimpleSwapV3 {
     /// @return amountOut The amount of WETH9 received.
     function swapExactInputSingle(
         uint256 amountIn
-    ) external virtual returns (uint256 amountOut) {
+    ) external returns (uint256 amountOut) {
         // msg.sender must approve this contract
 
         // Transfer the specified amount of DAI to this contract.

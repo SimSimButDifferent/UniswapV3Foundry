@@ -45,7 +45,9 @@ async function getPoolConstants(_token0, _token1, _fee) {
         _fee,
     )
 
-    console.log(currentPoolAddress)
+    console.log(
+        `Current pool address for ${_token0.name} / ${_token1.name} is: ${currentPoolAddress}`,
+    )
 
     return currentPoolAddress
 }

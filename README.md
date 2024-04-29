@@ -47,14 +47,56 @@ getPoolConstants(\_token0, \_token1, \_fee) takes two Token objects as defined i
 ```bash
 yarn hardhat run src/utils/getPoolConstants.js
 
-Current pool address for USDC / Aave Token is: 0xdceaf5d0E5E0dB9596A47C0c4120654e80B1d706
-Done in 3.19s.
+Current pool address for Wrapped Ether / Tether is: 0x4e68Ccd3E89f51C3074ca5072bbAC773960dFa36
+Token0: Wrapped Ether
+Token1: Tether
+Current pool address for Wrapped Ether / USDC is: 0x8ad599c3A0ff1De082011EFDDc58f1908eb6e6D8
+Token0: Wrapped Ether
+Token1: USDC
+Current pool address for Aave Token / USDC is: 0xdceaf5d0E5E0dB9596A47C0c4120654e80B1d706
+Token0: Aave Token
+Token1: USDC
+Current pool address for Wrapped Ether / Dai is: 0xC2e9F25Be6257c210d7Adf0D4Cd6E3E881ba25f8
+Token0: Wrapped Ether
+Token1: Dai
+Done in 5.72s.
 ```
 
 **Run Foundry tests**
 
 ```bash
 forge test --fork-url $FORK_URL --match-path test/SimpleSwapV3Test.t.sol -vv
+
+[⠊] Compiling...
+No files changed, compilation skipped
+
+Ran 3 tests for test/SimpleSwapV3Test.t.sol:SimpleSwapV3test
+[PASS] test_SwapExactInputSingle_DAI() (gas: 146799)
+Logs:
+  amountIn 10000000000000000000000
+  Dai Balance before: 10000000000000000000000
+  Weth9 Balance before: 0
+  amountOut 3139571343400636640
+  Dai Balance after: 0
+  Weth9 Balance after: 3139571343400636640
+
+[PASS] test_SwapExactInputSingle_USDC() (gas: 186396)
+Logs:
+  amountIn 10000000000
+  Usdc Balance before: 10000000000
+  Weth9 Balance before: 0
+  amountOut 3139462734963080313
+  Usdc Balance after: 0
+  Weth9 Balance after: 3139462734963080313
+
+[PASS] test_setUp() (gas: 27131)
+Logs:
+  Dai Balance before: 10000000000000000000000
+  USDC Balance before: 10000000000
+
+Suite result: ok. 3 passed; 0 failed; 0 skipped; finished in 11.81s (9.39s CPU time)
+
+Ran 1 test suite in 12.53s (11.81s CPU time): 3 tests passed, 0 failed, 0 skipped (3 total tests)
 ```
 
 ### Add more tokens

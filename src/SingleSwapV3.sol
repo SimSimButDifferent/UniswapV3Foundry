@@ -17,35 +17,36 @@ contract SimpleSwapV3 {
     /// @dev The calling address must approve this contract to spend at least `amountIn` worth of its Token0 for this function to succeed.
     /// @param amountIn The exact amount of Token0 that will be swapped for Token1.
     /// @return amountOut The amount of Token1 received.
+
     function swapExactInputSingle(
         uint256 amountIn,
-        address _token0,
-        address _token1,
-        uint24 _poolFee
+        address token0,
+        address token1,
+        uint24 poolFee
     ) external returns (uint256 amountOut) {
-        address Token0 = _token0;
-        address Token1 = _token1;
-        uint24 poolFee = _poolFee;
+        // address Token0 = _token0;
+        // address Token1 = _token1;
+        // uint24 poolFee = _poolFee;
 
         // msg.sender must approve this contract
 
         // Transfer the specified amount of Token0 to this contract.
         TransferHelper.safeTransferFrom(
-            Token0,
+            token0,
             msg.sender,
             address(this),
             amountIn
         );
 
         // Approve the router to spend Token0.
-        TransferHelper.safeApprove(Token0, address(swapRouter), amountIn);
+        TransferHelper.safeApprove(token0, address(swapRouter), amountIn);
 
         // Naively set amountOutMinimum to 0. In production, use an oracle or other data source to choose a safer value for amountOutMinimum.
         // We also set the sqrtPriceLimitx96 to be 0 to ensure we swap our exact input amount.
         ISwapRouter.ExactInputSingleParams memory params = ISwapRouter
             .ExactInputSingleParams({
-                tokenIn: Token0,
-                tokenOut: Token1,
+                tokenIn: token0,
+                tokenOut: token1,
                 fee: poolFee,
                 recipient: msg.sender,
                 deadline: block.timestamp,

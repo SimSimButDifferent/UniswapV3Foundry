@@ -36,17 +36,19 @@ contract SimpleSwapV3test is StdCheats, Test {
         simpleSwapV3 = new SimpleSwapV3(swapRouter);
 
         deal(DAI, user, amount);
-        deal(USDT, user, amount6d);
+        deal(USDC, user, amount6d);
 
         vm.prank(user);
         dai.approve(address(simpleSwapV3), type(uint256).max);
+        vm.prank(user);
+        usdc.approve(address(simpleSwapV3), type(uint256).max);
     }
 
     function test_setUp() external view {
         console.log("Dai Balance before:", dai.balanceOf(user));
-        console.log("USDT Balance before:", usdt.balanceOf(user));
+        console.log("USDC Balance before:", usdc.balanceOf(user));
         assertEq(dai.balanceOf(user), amount);
-        assertEq(usdt.balanceOf(user), amount6d);
+        assertEq(usdc.balanceOf(user), amount6d);
     }
 
     function test_SwapExactInputSingle_DAI() external {
@@ -72,38 +74,39 @@ contract SimpleSwapV3test is StdCheats, Test {
         uint256 weth_after = weth9.balanceOf(user);
 
         console.log("amountOut", amountOut);
-        console.log("USDT Balance after:", dai_after);
+        console.log("Dai Balance after:", dai_after);
         console.log("Weth9 Balance after:", weth_after);
 
         assertEq(dai_before - amountIn, dai_after);
     }
 
-    function test_SwapExactInputSingle_USDT() external {
-        uint256 amountIn = 10000 * 1e6;
+    function test_SwapExactInputSingle_USDC() external {
+        uint256 amountIn6d = 10000 * 1e6;
 
-        assertEq(usdt.balanceOf(user), amount6d);
+        assertEq(usdc.balanceOf(user), amount6d);
 
-        uint256 usdt_before = usdt.balanceOf(user);
+        uint256 usdc_before = usdc.balanceOf(user);
         uint256 weth9_before = weth9.balanceOf(user);
-        console.log("amountIn", amountIn);
+        console.log("amountIn", amountIn6d);
 
+        console.log("Usdc Balance before:", usdc_before);
         console.log("Weth9 Balance before:", weth9_before);
 
         vm.prank(user);
         uint256 amountOut = simpleSwapV3.swapExactInputSingle(
-            amountIn,
-            USDT,
+            amountIn6d,
+            USDC,
             WETH9,
             poolFeeMed
         );
 
-        uint256 usdt_after = dai.balanceOf(user);
+        uint256 usdc_after = usdc.balanceOf(user);
         uint256 weth_after = weth9.balanceOf(user);
 
         console.log("amountOut", amountOut);
-        console.log("USDT Balance after:", usdt_after);
+        console.log("Usdc Balance after:", usdc_after);
         console.log("Weth9 Balance after:", weth_after);
 
-        assertEq(usdt_before - amountIn, usdt_after);
+        assertEq(usdc_before - amountIn6d, usdc_after);
     }
 }

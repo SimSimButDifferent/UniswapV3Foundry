@@ -37,6 +37,7 @@ contract SimpleSwapV3test is StdCheats, Test {
 
         deal(DAI, user, amount);
         deal(USDC, user, amount6d);
+        deal(WETH9, user, 0);
 
         vm.prank(user);
         dai.approve(address(simpleSwapV3), type(uint256).max);
@@ -60,6 +61,7 @@ contract SimpleSwapV3test is StdCheats, Test {
         uint256 weth9_before = weth9.balanceOf(user);
         console.log("amountIn", amountIn);
 
+        console.log("Dai Balance before:", dai_before);
         console.log("Weth9 Balance before:", weth9_before);
 
         vm.prank(user);

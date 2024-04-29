@@ -87,4 +87,9 @@ getPoolConstants(DAI_TOKEN, WETH_TOKEN, feeMed).catch((error) => {
     process.exitCode = 1
 })
 
+getPoolConstants(USDC_TOKEN, WETH_TOKEN, feeMed).catch((error) => {
+    console.error("Error in getPoolConstants:", error)
+    process.exitCode = 1
+})
+
 exports.getPoolConstants = getPoolConstants

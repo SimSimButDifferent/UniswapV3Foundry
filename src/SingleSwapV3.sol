@@ -24,10 +24,6 @@ contract SimpleSwapV3 {
         address token1,
         uint24 poolFee
     ) external returns (uint256 amountOut) {
-        // address Token0 = _token0;
-        // address Token1 = _token1;
-        // uint24 poolFee = _poolFee;
-
         // msg.sender must approve this contract
 
         // Transfer the specified amount of Token0 to this contract.

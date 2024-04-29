@@ -6,6 +6,19 @@ Building a functional testing environment that i can use as a clone to build any
 
 ```bash
 git clone https://github.com/SimSimButDifferent/UniswapV3Foundry.git
+foundryup
+foundry init
+
+yarn add --dev hardhat
+yarn hardhat init
+
+yarn add --dev hardhat @nomicfoundation/hardhat-foundry @nomicfoundation/hardhat-toolbox
+```
+
+**Set rpc url**
+
+```bash
+FORK_URL=https://eth-mainnet.g.alchemy.com/v2/YOUR_API_KEY_
 ```
 
 ### Some commands to run
@@ -29,7 +42,7 @@ Done in 4.82s.
 
 **get Pool address**
 
-getPoolConstants(_token0, _token1, _fee) takes two Token objects as defined in the **constants.js**.
+getPoolConstants(\_token0, \_token1, \_fee) takes two Token objects as defined in the **constants.js**.
 
 ```bash
 yarn hardhat run src/utils/getPoolConstants.js
@@ -38,9 +51,14 @@ Current pool address for USDC / Aave Token is: 0xdceaf5d0E5E0dB9596A47C0c4120654
 Done in 3.19s.
 ```
 
+**Run Foundry tests**
+
+```bash
+forge test --fork-url $FORK_URL --match-path test/SimpleSwapV3Test.t.sol -vv
+```
+
 ### Add more tokens
 
-- Add new token objects to **constants.js**
+-   Add new token objects to **constants.js**
 
-- Add pairs to **config.js** file
-
+-   Add pairs to **config.js** file

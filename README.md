@@ -6,13 +6,13 @@ Building a functional testing environment that i can use as a clone to build any
 
 ```bash
 git clone https://github.com/SimSimButDifferent/UniswapV3Foundry.git
+
+yarn
+
 foundryup
 foundry init
 
-yarn add --dev hardhat
 yarn hardhat init
-
-yarn add --dev hardhat @nomicfoundation/hardhat-foundry @nomicfoundation/hardhat-toolbox
 ```
 
 **Set rpc url**

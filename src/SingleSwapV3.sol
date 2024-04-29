@@ -8,44 +8,44 @@ import "@uniswap/v3-periphery/contracts/libraries/TransferHelper.sol";
 contract SimpleSwapV3 {
     ISwapRouter public immutable swapRouter;
 
-    address public constant DAI = 0x6B175474E89094C44Da98b954EedeAC495271d0F;
-    address public constant WETH9 = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
-    address public constant USDC = 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48;
-
-    // For this example, we will set the pool fee to 0.3%.
-    uint24 public constant poolFee = 3000;
-
     constructor(ISwapRouter _swapRouter) {
         swapRouter = _swapRouter;
     }
 
-    /// @notice swapExactInputSingle swaps a fixed amount of DAI for a maximum possible amount of WETH9
-    /// using the DAI/WETH9 0.3% pool by calling `exactInputSingle` in the swap router.
-    /// @dev The calling address must approve this contract to spend at least `amountIn` worth of its DAI for this function to succeed.
-    /// @param amountIn The exact amount of DAI that will be swapped for WETH9.
-    /// @return amountOut The amount of WETH9 received.
+    /// @notice swapExactInputSingle swaps a fixed amount of Token0 for a maximum possible amount of Token1
+    /// using the Token0/Token1 specified pool fee (500/ 3000/ 10000) pool by calling `exactInputSingle` in the swap router.
+    /// @dev The calling address must approve this contract to spend at least `amountIn` worth of its Token0 for this function to succeed.
+    /// @param amountIn The exact amount of Token0 that will be swapped for Token1.
+    /// @return amountOut The amount of Token1 received.
     function swapExactInputSingle(
-        uint256 amountIn
+        uint256 amountIn,
+        address _token0,
+        address _token1,
+        uint24 _poolFee
     ) external returns (uint256 amountOut) {
+        address Token0 = _token0;
+        address Token1 = _token1;
+        uint24 poolFee = _poolFee;
+
         // msg.sender must approve this contract
 
-        // Transfer the specified amount of DAI to this contract.
+        // Transfer the specified amount of Token0 to this contract.
         TransferHelper.safeTransferFrom(
-            DAI,
+            Token0,
             msg.sender,
             address(this),
             amountIn
         );
 
-        // Approve the router to spend DAI.
-        TransferHelper.safeApprove(DAI, address(swapRouter), amountIn);
+        // Approve the router to spend Token0.
+        TransferHelper.safeApprove(Token0, address(swapRouter), amountIn);
 
         // Naively set amountOutMinimum to 0. In production, use an oracle or other data source to choose a safer value for amountOutMinimum.
         // We also set the sqrtPriceLimitx96 to be 0 to ensure we swap our exact input amount.
         ISwapRouter.ExactInputSingleParams memory params = ISwapRouter
             .ExactInputSingleParams({
-                tokenIn: DAI,
-                tokenOut: WETH9,
+                tokenIn: Token0,
+                tokenOut: Token1,
                 fee: poolFee,
                 recipient: msg.sender,
                 deadline: block.timestamp,

@@ -3,12 +3,14 @@ const { FeeAmount } = require("@uniswap/v3-sdk")
 const { getProvider } = require("./getProvider")
 
 const IUniswapV3FactoryABI = require("@uniswap/v3-core/artifacts/contracts/interfaces/IUniswapV3Factory.sol/IUniswapV3Factory.json")
+const IUniswapPoolABI = require("@uniswap/v3-core/artifacts/contracts/interfaces/IUniswapV3Pool.sol/IUniswapV3Pool.json")
 
 const {
     POOL_FACTORY_CONTRACT_ADDRESS,
     USDC_TOKEN,
     WETH_TOKEN,
     USDT_TOKEN,
+    DAI_TOKEN,
     WBTC_TOKEN,
     LINK_TOKEN,
     UNI_TOKEN,
@@ -45,14 +47,42 @@ async function getPoolConstants(_token0, _token1, _fee) {
         _fee,
     )
 
-    console.log(
-        `Current pool address for ${_token0.name} / ${_token1.name} is: ${currentPoolAddress}`,
+    const pool = new ethers.Contract(
+        currentPoolAddress,
+        IUniswapPoolABI.abi,
+        provider,
     )
 
-    return currentPoolAddress
+    const [token0, token1] = await Promise.all([pool.token0(), pool.token1()])
+
+    if (token0.address == token0) {
+        console.log(
+            `Current pool address for ${_token0.name} / ${_token1.name} is: ${currentPoolAddress}`,
+        )
+        console.log(`Token0: ${_token0.name}`)
+        console.log(`Token1: ${_token1.name}`)
+    } else {
+        console.log(
+            `Current pool address for ${_token1.name} / ${_token0.name} is: ${currentPoolAddress}`,
+        )
+        console.log(`Token0: ${_token1.name}`)
+        console.log(`Token1: ${_token0.name}`)
+    }
+
+    return currentPoolAddress, token0, token1
 }
 
 getPoolConstants(USDC_TOKEN, AAVE_TOKEN, feeMed).catch((error) => {
+    console.error("Error in getPoolConstants:", error)
+    process.exitCode = 1
+})
+
+getPoolConstants(USDT_TOKEN, WETH_TOKEN, feeMed).catch((error) => {
+    console.error("Error in getPoolConstants:", error)
+    process.exitCode = 1
+})
+
+getPoolConstants(DAI_TOKEN, WETH_TOKEN, feeMed).catch((error) => {
     console.error("Error in getPoolConstants:", error)
     process.exitCode = 1
 })

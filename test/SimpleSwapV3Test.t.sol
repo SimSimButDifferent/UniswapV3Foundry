@@ -13,12 +13,21 @@ contract SimpleSwapV3test is StdCheats, Test {
     ISwapRouter swapRouter =
         ISwapRouter(0xE592427A0AEce92De3Edee1F18E0157C05861564);
 
+    address constant USDT = 0xdAC17F958D2ee523a2206206994597C13D831ec7;
     address constant DAI = 0x6B175474E89094C44Da98b954EedeAC495271d0F;
+    address constant USDC = 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48;
     address constant WETH9 = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
 
-    uint256 constant amount = 10000 * 1e18;
+    uint24 constant poolFeeLow = 500;
+    uint24 constant poolFeeMed = 3000;
+    uint24 constant poolFeeHigh = 10000;
 
+    uint256 constant amount = 10000 * 1e18;
+    uint256 constant amount6d = 10000 * 1e6;
+
+    IERC20 public usdt = IERC20(USDT);
     IERC20 public dai = IERC20(DAI);
+    IERC20 public usdc = IERC20(USDC);
     IERC20 public weth9 = IERC20(WETH9);
 
     address constant user = address(1);
@@ -27,17 +36,20 @@ contract SimpleSwapV3test is StdCheats, Test {
         simpleSwapV3 = new SimpleSwapV3(swapRouter);
 
         deal(DAI, user, amount);
+        deal(USDT, user, amount6d);
+
         vm.prank(user);
         dai.approve(address(simpleSwapV3), type(uint256).max);
     }
 
-    function test_setUp() external {
-        deal(DAI, user, amount);
+    function test_setUp() external view {
         console.log("Dai Balance before:", dai.balanceOf(user));
+        console.log("USDT Balance before:", usdt.balanceOf(user));
         assertEq(dai.balanceOf(user), amount);
+        assertEq(usdt.balanceOf(user), amount6d);
     }
 
-    function test_SwapExactInputSingle() external {
+    function test_SwapExactInputSingle_DAI() external {
         uint256 amountIn = 10000 * 1e18;
 
         assertEq(dai.balanceOf(user), amount);
@@ -49,15 +61,49 @@ contract SimpleSwapV3test is StdCheats, Test {
         console.log("Weth9 Balance before:", weth9_before);
 
         vm.prank(user);
-        uint256 amountOut = simpleSwapV3.swapExactInputSingle(amountIn);
+        uint256 amountOut = simpleSwapV3.swapExactInputSingle(
+            amountIn,
+            DAI,
+            WETH9,
+            poolFeeMed
+        );
 
         uint256 dai_after = dai.balanceOf(user);
         uint256 weth_after = weth9.balanceOf(user);
 
         console.log("amountOut", amountOut);
-        console.log("Dai Balance after:", dai_after);
+        console.log("USDT Balance after:", dai_after);
         console.log("Weth9 Balance after:", weth_after);
 
         assertEq(dai_before - amountIn, dai_after);
+    }
+
+    function test_SwapExactInputSingle_USDT() external {
+        uint256 amountIn = 10000 * 1e6;
+
+        assertEq(usdt.balanceOf(user), amount6d);
+
+        uint256 usdt_before = usdt.balanceOf(user);
+        uint256 weth9_before = weth9.balanceOf(user);
+        console.log("amountIn", amountIn);
+
+        console.log("Weth9 Balance before:", weth9_before);
+
+        vm.prank(user);
+        uint256 amountOut = simpleSwapV3.swapExactInputSingle(
+            amountIn,
+            USDT,
+            WETH9,
+            poolFeeMed
+        );
+
+        uint256 usdt_after = dai.balanceOf(user);
+        uint256 weth_after = weth9.balanceOf(user);
+
+        console.log("amountOut", amountOut);
+        console.log("USDT Balance after:", usdt_after);
+        console.log("Weth9 Balance after:", weth_after);
+
+        assertEq(usdt_before - amountIn, usdt_after);
     }
 }

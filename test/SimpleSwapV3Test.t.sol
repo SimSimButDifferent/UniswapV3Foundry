@@ -20,6 +20,7 @@ contract SimpleSwapV3test is StdCheats, Test {
     address constant USDC = 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48;
     address constant WETH9 = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
 
+    uint24 constant poolFeeLowest = 100;
     uint24 constant poolFeeLow = 500;
     uint24 constant poolFeeMed = 3000;
     uint24 constant poolFeeHigh = 10000;
@@ -61,7 +62,7 @@ contract SimpleSwapV3test is StdCheats, Test {
 
     // SINGLE SWAP TESTS
 
-    function test_SwapExactInputSingle_DAI() external {
+    function test_SwapExactInputSingle_DAI() private /*external*/ {
         uint256 amountIn = 10000 * 1e18;
 
         assertEq(dai.balanceOf(user), amount);
@@ -89,9 +90,10 @@ contract SimpleSwapV3test is StdCheats, Test {
         console.log("Weth9 Balance after:", weth_after);
 
         assertEq(dai_before - amountIn, dai_after);
+        assertEq(weth9_before + amountOut, weth_after);
     }
 
-    function test_SwapExactInputSingle_USDC() external {
+    function test_SwapExactInputSingle_USDC() private /*external*/ {
         uint256 amountIn6d = 10000 * 1e6;
 
         assertEq(usdc.balanceOf(user), amount6d);
@@ -119,11 +121,21 @@ contract SimpleSwapV3test is StdCheats, Test {
         console.log("Weth9 Balance after:", weth_after);
 
         assertEq(usdc_before - amountIn6d, usdc_after);
+        assertEq(weth9_before + amountOut, weth_after);
     }
 
     // MULTIHOP TESTS
     function test_swapExactInputMultihop() external {
-        uint256 amountIn = 10000 * 1e18;
+        uint256 amountIn = 1000 * 1e18;
+        address[] memory path = new address[](3);
+        uint24[] memory fees = new uint24[](2);
+
+        path[0] = DAI;
+        path[1] = USDC;
+        path[2] = WETH9;
+
+        fees[0] = poolFeeLow;
+        fees[1] = poolFeeLow;
 
         assertEq(dai.balanceOf(user), amount);
 
@@ -135,7 +147,11 @@ contract SimpleSwapV3test is StdCheats, Test {
         console.log("Weth9 Balance before:", weth9_before);
 
         vm.prank(user);
-        uint256 amountOut = multihopV3.swapExactInputMultihop(amountIn);
+        uint256 amountOut = multihopV3.swapExactInputMultihop(
+            amountIn,
+            path,
+            fees
+        );
 
         uint256 dai_after = dai.balanceOf(user);
         uint256 weth_after = weth9.balanceOf(user);
@@ -145,5 +161,6 @@ contract SimpleSwapV3test is StdCheats, Test {
         console.log("Weth9 Balance after:", weth_after);
 
         assertEq(dai_before - amountIn, dai_after);
+        assertEq(weth9_before + amountOut, weth_after);
     }
 }

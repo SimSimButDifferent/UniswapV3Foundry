@@ -62,7 +62,7 @@ contract SimpleSwapV3test is StdCheats, Test {
 
     // SINGLE SWAP TESTS
 
-    function test_SwapExactInputSingle_DAI() private /*external*/ {
+    function test_SwapExactInputSingle_DAI() external {
         uint256 amountIn = 10000 * 1e18;
 
         assertEq(dai.balanceOf(user), amount);
@@ -93,7 +93,7 @@ contract SimpleSwapV3test is StdCheats, Test {
         assertEq(weth9_before + amountOut, weth_after);
     }
 
-    function test_SwapExactInputSingle_USDC() private /*external*/ {
+    function test_SwapExactInputSingle_USDC() external {
         uint256 amountIn6d = 10000 * 1e6;
 
         assertEq(usdc.balanceOf(user), amount6d);

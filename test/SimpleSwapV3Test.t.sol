@@ -3,12 +3,14 @@ pragma solidity >=0.7.0 <0.9.0;
 pragma abicoder v2;
 
 import {SimpleSwapV3, IERC20, ISwapRouter} from "../src/SingleSwapV3.sol";
+import {MultihopV3} from "../src/MultihopV3.sol";
 import {Test, console} from "forge-std/Test.sol";
 
 import {StdCheats} from "forge-std/StdCheats.sol";
 
 contract SimpleSwapV3test is StdCheats, Test {
     SimpleSwapV3 public simpleSwapV3;
+    MultihopV3 public multihopV3;
 
     ISwapRouter swapRouter =
         ISwapRouter(0xE592427A0AEce92De3Edee1F18E0157C05861564);
@@ -34,6 +36,7 @@ contract SimpleSwapV3test is StdCheats, Test {
 
     function setUp() external {
         simpleSwapV3 = new SimpleSwapV3(swapRouter);
+        multihopV3 = new MultihopV3(swapRouter);
 
         deal(DAI, user, amount);
         deal(USDC, user, amount6d);
@@ -43,6 +46,10 @@ contract SimpleSwapV3test is StdCheats, Test {
         dai.approve(address(simpleSwapV3), type(uint256).max);
         vm.prank(user);
         usdc.approve(address(simpleSwapV3), type(uint256).max);
+        vm.prank(user);
+        dai.approve(address(multihopV3), type(uint256).max);
+        vm.prank(user);
+        usdc.approve(address(multihopV3), type(uint256).max);
     }
 
     function test_setUp() external view {
@@ -51,6 +58,8 @@ contract SimpleSwapV3test is StdCheats, Test {
         assertEq(dai.balanceOf(user), amount);
         assertEq(usdc.balanceOf(user), amount6d);
     }
+
+    // SINGLE SWAP TESTS
 
     function test_SwapExactInputSingle_DAI() external {
         uint256 amountIn = 10000 * 1e18;
@@ -110,5 +119,31 @@ contract SimpleSwapV3test is StdCheats, Test {
         console.log("Weth9 Balance after:", weth_after);
 
         assertEq(usdc_before - amountIn6d, usdc_after);
+    }
+
+    // MULTIHOP TESTS
+    function test_swapExactInputMultihop() external {
+        uint256 amountIn = 10000 * 1e18;
+
+        assertEq(dai.balanceOf(user), amount);
+
+        uint256 dai_before = dai.balanceOf(user);
+        uint256 weth9_before = weth9.balanceOf(user);
+        console.log("amountIn", amountIn);
+
+        console.log("Dai Balance before:", dai_before);
+        console.log("Weth9 Balance before:", weth9_before);
+
+        vm.prank(user);
+        uint256 amountOut = multihopV3.swapExactInputMultihop(amountIn);
+
+        uint256 dai_after = dai.balanceOf(user);
+        uint256 weth_after = weth9.balanceOf(user);
+
+        console.log("amountOut", amountOut);
+        console.log("Dai Balance after:", dai_after);
+        console.log("Weth9 Balance after:", weth_after);
+
+        assertEq(dai_before - amountIn, dai_after);
     }
 }

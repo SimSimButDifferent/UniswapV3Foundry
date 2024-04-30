@@ -17,15 +17,25 @@ yarn hardhat init
 
 **Set rpc url**
 
+If you haven't already, go get a mainnet API key from Alchemy, Infura or Quicknode.
+
 ```bash
 FORK_URL=https://eth-mainnet.g.alchemy.com/v2/YOUR_API_KEY_
+```
+
+**Run the local node**
+
+You can go to etherscan.io if you want to get a more recent block number.
+
+```bash
+anvil --fork-url FORK_URL --fork-block-number 19721861 --fork-chain-id 1 --chain-id 1
 ```
 
 ### Some commands to run
 
 **Get a Quote**
 
-quoteV1(params) function takes a pair object as defined inside **config.js**.
+**quoteV1(params)** function takes a pair object as defined inside **config.js**.
 
 ```bash
 yarn hardhat run src/utils/quoteV1.js
@@ -42,7 +52,7 @@ Done in 4.82s.
 
 **get Pool address**
 
-getPoolConstants(\_token0, \_token1, \_fee) takes two Token objects as defined in the **constants.js**.
+**getPoolConstants(\_token0, \_token1, \_fee)** takes two Token objects as defined in the **constants.js**.
 
 ```bash
 yarn hardhat run src/utils/getPoolConstants.js
@@ -67,36 +77,47 @@ Done in 5.72s.
 ```bash
 forge test --fork-url $FORK_URL --match-path test/SimpleSwapV3Test.t.sol -vv
 
-[⠊] Compiling...
-No files changed, compilation skipped
+[⠒] Compiling...
+[⠊] Compiling 1 files with 0.7.6
+[⠒] Solc 0.7.6 finished in 1.84s
+Compiler run successful!
 
-Ran 3 tests for test/SimpleSwapV3Test.t.sol:SimpleSwapV3test
-[PASS] test_SwapExactInputSingle_DAI() (gas: 146799)
+Ran 4 tests for test/SimpleSwapV3Test.t.sol:SimpleSwapV3test
+[PASS] test_SwapExactInputSingle_DAI() (gas: 148729)
 Logs:
   amountIn 10000000000000000000000
   Dai Balance before: 10000000000000000000000
   Weth9 Balance before: 0
-  amountOut 3139571343400636640
+  amountOut 3153030882673471146
   Dai Balance after: 0
-  Weth9 Balance after: 3139571343400636640
+  Weth9 Balance after: 3153030882673471146
 
-[PASS] test_SwapExactInputSingle_USDC() (gas: 186396)
+[PASS] test_SwapExactInputSingle_USDC() (gas: 178853)
 Logs:
   amountIn 10000000000
   Usdc Balance before: 10000000000
   Weth9 Balance before: 0
-  amountOut 3139462734963080313
+  amountOut 3152854925396431301
   Usdc Balance after: 0
-  Weth9 Balance after: 3139462734963080313
+  Weth9 Balance after: 3152854925396431301
 
 [PASS] test_setUp() (gas: 27131)
 Logs:
   Dai Balance before: 10000000000000000000000
   USDC Balance before: 10000000000
 
-Suite result: ok. 3 passed; 0 failed; 0 skipped; finished in 11.81s (9.39s CPU time)
+[PASS] test_swapExactInputMultihop() (gas: 253298)
+Logs:
+  amountIn 1000000000000000000000
+  Dai Balance before: 10000000000000000000000
+  Weth9 Balance before: 0
+  amountOut 315554466975787219
+  Dai Balance after: 9000000000000000000000
+  Weth9 Balance after: 315554466975787219
 
-Ran 1 test suite in 12.53s (11.81s CPU time): 3 tests passed, 0 failed, 0 skipped (3 total tests)
+Suite result: ok. 4 passed; 0 failed; 0 skipped; finished in 14.17s (15.60s CPU time)
+
+Ran 1 test suite in 14.84s (14.17s CPU time): 4 tests passed, 0 failed, 0 skipped (4 total tests)
 ```
 
 ### Add more tokens

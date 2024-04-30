@@ -59,6 +59,12 @@ const CurrentConfig = {
         poolFee: FeeAmount.MEDIUM,
         amountIn: ethers.utils.parseEther("1"),
     },
+    USDTAAVE: {
+        in: USDT_TOKEN,
+        out: AAVE_TOKEN,
+        poolFee: FeeAmount.MEDIUM,
+        amountIn: ethers.utils.parseUnits("1", 6),
+    },
 }
 
 module.exports = { CurrentConfig }

@@ -10,12 +10,14 @@ const {
     CRV_TOKEN,
 } = require("./src/utils/constants")
 const { ethers } = require("hardhat")
+require("dotenv").config()
+
+const ALCHEMY_MAINNET_API = process.env.ALCHEMY_MAINNET_API
 
 const CurrentConfig = {
     rpc: {
         local: "http://localhost:8545",
-        mainnet:
-            "https://eth-mainnet.g.alchemy.com/v2/VuIQG_PWKLrGJ3At5UsTBFVSaq97E41r",
+        mainnet: ALCHEMY_MAINNET_API,
     },
     WETHUSDC: {
         in: WETH_TOKEN,

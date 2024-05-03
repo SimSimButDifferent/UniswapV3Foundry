@@ -7,10 +7,14 @@ Building a functional testing environment that i can use as a clone to build any
 ```bash
 git clone https://github.com/SimSimButDifferent/UniswapV3Foundry.git
 
+cd UniswapV3Foundry
+
 yarn
 
 foundryup
 foundry init
+
+forge install foundry-rs/forge-std
 
 yarn hardhat init
 ```

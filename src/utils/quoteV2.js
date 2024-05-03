@@ -143,14 +143,14 @@ quoteV2(CurrentConfig.USDTUSDC)
 
 quoteV2(CurrentConfig.WBTCUSDT)
 
-// quoteV2(CurrentConfig.LINKUSDT)
+quoteV2(CurrentConfig.LINKUSDT)
 
-// quoteV2(CurrentConfig.UNIUSDT)
+quoteV2(CurrentConfig.UNIUSDT)
 
-// quoteV2(CurrentConfig.AAVEUSDC)
+quoteV2(CurrentConfig.AAVEUSDC)
 
-// quoteV2(CurrentConfig.CRVUSDT)
+quoteV2(CurrentConfig.CRVUSDT)
 
-// quoteV2(CurrentConfig.USDTAAVE)
+quoteV2(CurrentConfig.USDTAAVE)
 
 exports.quoteV2 = quoteV2

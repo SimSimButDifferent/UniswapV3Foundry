@@ -1,6 +1,7 @@
 /** @type import('hardhat/config').HardhatUserConfig */
 require("@nomicfoundation/hardhat-toolbox")
 require("@nomicfoundation/hardhat-foundry")
+
 require("dotenv").config()
 
 const ALCHEMY_MAINNET_API = process.env.ALCHEMY_MAINNET_API
